@@ -1,0 +1,508 @@
+---
+import { siteData, buildWhatsAppUrl } from "../data/site";
+import "../styles/global.css";
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonicalPath?: string;
+  isNotFound?: boolean;
+  breadcrumbs?: BreadcrumbItem[];
+}
+
+const {
+  title = siteData.seoPages.home.title,
+  description = siteData.seoPages.home.description,
+  canonicalPath,
+  isNotFound = false,
+  breadcrumbs
+} = Astro.props;
+
+// Origem explícita de publicação via variável de ambiente ou Astro.site.
+// Em ambiente local, se não definido, mantém undefined para não inventar domínio.
+const siteOrigin = process.env.SITE_URL || process.env.PUBLIC_SITE_URL || (Astro.site ? Astro.site.origin : undefined);
+const isPublishedOrigin = Boolean(siteOrigin && !siteOrigin.includes("localhost") && !siteOrigin.includes("127.0.0.1"));
+
+const targetPath = canonicalPath || Astro.url.pathname;
+const canonicalUrl = siteOrigin ? new URL(targetPath, siteOrigin).href : undefined;
+const ogImageUrl = siteOrigin ? new URL("/assets/images/og-image.jpg", siteOrigin).href : "/assets/images/og-image.jpg";
+
+// Schema.org com modelagem factual
+const schemaOrgData: any[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Locksmith",
+    "@id": siteOrigin ? `${siteOrigin}/#locksmith` : undefined,
+    "name": siteData.name,
+    "description": description,
+    "url": siteOrigin || undefined,
+    "telephone": siteData.phoneRaw,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Rua Agulhas Negras, 1530",
+      "addressLocality": "Joinville",
+      "addressRegion": "SC",
+      "addressCountry": "BR"
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "12:00",
+        "description": "Expediente da loja física matutino"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "14:00",
+        "closes": "18:00",
+        "description": "Expediente da loja física vespertino"
+      }
+    ],
+    "paymentAccepted": "Credit Card, Debit Card",
+    "currenciesAccepted": "BRL",
+    "areaServed": {
+      "@type": "City",
+      "name": "Joinville"
+    }
+  }
+];
+
+if (breadcrumbs && breadcrumbs.length > 0) {
+  schemaOrgData.push({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbs.map((b, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": b.name,
+      "item": siteOrigin ? new URL(b.url, siteOrigin).href : b.url
+    }))
+  });
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Homologação / Staging: noindex até publicação oficial autorizada -->
+    {
+      isNotFound || !isPublishedOrigin || process.env.ENABLE_INDEXING !== "true" ? (
+        <meta name="robots" content="noindex, nofollow" />
+      ) : (
+        <meta name="robots" content="index, follow" />
+      )
+    }
+
+    <!-- Canonical autorreferente por URL quando houver origem pública -->
+    {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+
+    <!-- Favicon e Ícones -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+
+    <!-- Tipografia: Sora e Inter do Google Fonts com preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Metatags Open Graph -->
+    <meta property="og:type" content="website" />
+    {canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content={siteData.name} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(schemaOrgData.length === 1 ? schemaOrgData[0] : schemaOrgData)} />
+  </head>
+  <body>
+    <!-- Skip Link para acessibilidade -->
+    <a href="#conteudo-principal" class="skip-link" id="skip-link">Pular para o conteúdo principal</a>
+
+    <!-- Cabeçalho Principal em Linha Única Compacta -->
+    <header class="site-header" id="cabecalho">
+      <div class="container header-inner">
+        <!-- Marca Oficial Fiel ao Wix (Assinatura tipográfica em duas linhas, preta sobre amarelo) -->
+        <a href="/" class="brand-link" aria-label="Chaveiro Mota - Página Inicial">
+          <div class="brand-badge" aria-hidden="true">
+            <span class="brand-line-1">CHAVEIRO</span>
+            <span class="brand-line-2">MOTA</span>
+          </div>
+          <span class="brand-tagline">Joinville • 24h</span>
+        </a>
+
+        <!-- Navegação Desktop Direta: 3 Caminhos Principais -->
+        <nav class="nav-desktop" aria-label="Navegação principal">
+          <a href="/#servicos" class="nav-link">Serviços</a>
+          <a href="/#loja" class="nav-link">Loja & Localização</a>
+          <a href="/#faq" class="nav-link">Dúvidas</a>
+        </nav>
+
+        <!-- Ações Desktop: WhatsApp e Telefone -->
+        <div class="header-actions-desktop">
+          <a
+            href={buildWhatsAppUrl(siteData.hero.ctaWhatsappMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-sm"
+            data-track="header-whatsapp"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>WhatsApp</span>
+          </a>
+          <a href={siteData.telHref} class="btn btn-secondary-light btn-sm" data-track="header-phone">
+            <span>{siteData.phoneDisplay}</span>
+          </a>
+        </div>
+
+        <!-- Botão Menu Mobile -->
+        <button
+          type="button"
+          class="btn-mobile-menu"
+          id="btn-abrir-menu"
+          aria-label="Abrir menu de navegação"
+          aria-expanded="false"
+          aria-controls="menu-lateral"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Drawer Mobile com diálogo acessível e contenção estrita de foco -->
+    <div class="mobile-drawer" id="menu-lateral" aria-hidden="true">
+      <div class="mobile-drawer-content" role="dialog" aria-modal="true" aria-label="Menu principal">
+        <div class="mobile-drawer-header">
+          <div class="brand-badge brand-badge-sm" aria-hidden="true">
+            <span class="brand-line-1">CHAVEIRO</span>
+            <span class="brand-line-2">MOTA</span>
+          </div>
+          <button type="button" class="btn-close-drawer" id="btn-fechar-menu" aria-label="Fechar menu">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <nav class="mobile-nav-links" aria-label="Navegação móvel">
+          <a href="/#servicos" class="mobile-nav-link">Serviços Principais</a>
+          <div class="mobile-subnav">
+            <a href="/chaveiro-automotivo-joinville/" class="mobile-subnav-link">Chaveiro Automotivo</a>
+            <a href="/chaveiro-residencial-joinville/" class="mobile-subnav-link">Chaveiro Residencial</a>
+            <a href="/copia-de-chaves-joinville/" class="mobile-subnav-link">Cópia de Chaves</a>
+          </div>
+          <a href="/#loja" class="mobile-nav-link">Loja no Jarivatuba</a>
+          <a href="/#faq" class="mobile-nav-link">Dúvidas Frequentes</a>
+        </nav>
+
+        <div class="mobile-drawer-actions">
+          <a
+            href={buildWhatsAppUrl(siteData.hero.ctaWhatsappMessage)}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            data-track="drawer-whatsapp"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+            </svg>
+            <span>Conversar no WhatsApp</span>
+          </a>
+          <a href={siteData.telHref} class="btn btn-secondary-light" data-track="drawer-phone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            <span>{siteData.phoneDisplay}</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main id="conteudo-principal">
+      <slot />
+    </main>
+
+    <!-- Rodapé Compacto e Factual -->
+    <footer class="site-footer" id="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-col-brand">
+            <div class="brand-badge brand-badge-sm" aria-hidden="true">
+              <span class="brand-line-1">CHAVEIRO</span>
+              <span class="brand-line-2">MOTA</span>
+            </div>
+            <p class="footer-desc">
+              Assistência técnica em aberturas, chaves automotivas codificadas, fechaduras e cópias no Jarivatuba e em Joinville.
+            </p>
+            <div class="footer-emergency-label">
+              Plantão Móvel 24 Horas em Joinville
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-col-title">Páginas e Serviços</h3>
+            <div class="footer-nav-grouped">
+              <div class="footer-nav-subgroup">
+                <span class="footer-group-label">Serviços</span>
+                <ul class="footer-nav">
+                  <li><a href="/chaveiro-automotivo-joinville/" class="footer-nav-link">Chaveiro Automotivo</a></li>
+                  <li><a href="/chaveiro-residencial-joinville/" class="footer-nav-link">Chaveiro Residencial</a></li>
+                  <li><a href="/copia-de-chaves-joinville/" class="footer-nav-link">Cópia de Chaves & Balcão</a></li>
+                </ul>
+              </div>
+              <div class="footer-nav-subgroup">
+                <span class="footer-group-label">Informações</span>
+                <ul class="footer-nav">
+                  <li><a href="/" class="footer-nav-link">Início / Plantão 24h</a></li>
+                  <li><a href="/#loja" class="footer-nav-link">Loja no Jarivatuba</a></li>
+                  <li><a href="/#faq" class="footer-nav-link">Dúvidas Frequentes</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-col">
+            <h3 class="footer-col-title">Atendimento & Endereço</h3>
+            <ul class="footer-contacts-list">
+              <li class="footer-contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+                <div>
+                  <strong>Telefone / Ligação:</strong><br />
+                  <a href={siteData.telHref} style="color: #FFFFFF;">{siteData.phoneDisplay}</a>
+                </div>
+              </li>
+              <li class="footer-contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                  <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <div>
+                  <strong>Endereço da Loja:</strong><br />
+                  {siteData.addressStreet}<br />
+                  <span style="color: var(--color-text-light-muted);">{siteData.addressDistrictCity}</span>
+                </div>
+              </li>
+              <li class="footer-contact-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <div>
+                  <strong>Horário da Loja:</strong><br />
+                  Segunda a sexta: 09h–12h e 14h–18h
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="footer-copy">
+            &copy; {new Date().getFullYear()} {siteData.name}. Todos os direitos reservados.
+          </div>
+          <div>
+            Atendimento local em Joinville/SC • Orçamento sem compromisso
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Barra Rápida Fixa Mobile (telas < 768px) -->
+    <div class="mobile-bottom-bar" id="mobile-bottom-bar" aria-label="Ações rápidas de contato">
+      <a href={siteData.telHref} class="btn btn-secondary-light" data-track="mobile-bar-phone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span>Ligar</span>
+      </a>
+      <a
+        href={buildWhatsAppUrl("Olá! Vi o site do Chaveiro Mota e preciso de atendimento em Joinville.")}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-primary"
+        data-track="mobile-bar-whatsapp"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+        </svg>
+        <span>WhatsApp</span>
+      </a>
+    </div>
+
+    <!-- Script de Interação Acessível: Drawer, Escape, Focus Trap, Inert e Breakpoint -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnAbrir = document.getElementById("btn-abrir-menu");
+        const btnFechar = document.getElementById("btn-fechar-menu");
+        const drawer = document.getElementById("menu-lateral");
+        const drawerContent = drawer?.querySelector(".mobile-drawer-content");
+
+        // Elementos irmãos de fundo para isolamento estrito via atributo 'inert'
+        const backgroundElements = [
+          document.getElementById("skip-link"),
+          document.getElementById("cabecalho"),
+          document.getElementById("conteudo-principal"),
+          document.getElementById("site-footer"),
+          document.getElementById("mobile-bottom-bar")
+        ].filter(Boolean) as HTMLElement[];
+
+        function getFocusableElements(): HTMLElement[] {
+          if (!drawerContent) return [];
+          const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+          return Array.from(drawerContent.querySelectorAll<HTMLElement>(selector)).filter(
+            (el) => !el.hasAttribute("disabled") && el.offsetParent !== null
+          );
+        }
+
+        function abrirDrawer() {
+          if (!drawer || !btnAbrir) return;
+          drawer.classList.add("is-open");
+          drawer.setAttribute("aria-hidden", "false");
+          btnAbrir.setAttribute("aria-expanded", "true");
+          document.body.classList.add("menu-open");
+          document.body.style.overflow = "hidden";
+
+          // Tornar todos os elementos irmãos de fundo inertes
+          backgroundElements.forEach((el) => el.setAttribute("inert", ""));
+
+          // Foco inicial no botão de fechar
+          btnFechar?.focus();
+        }
+
+        function fecharDrawer(targetFocusEl?: HTMLElement | null) {
+          if (!drawer || !btnAbrir) return;
+          if (!drawer.classList.contains("is-open")) return;
+
+          drawer.classList.remove("is-open");
+          drawer.setAttribute("aria-hidden", "true");
+          btnAbrir.setAttribute("aria-expanded", "false");
+          document.body.classList.remove("menu-open");
+          document.body.style.overflow = "";
+
+          // Remover inércia de todos os elementos irmãos
+          backgroundElements.forEach((el) => el.removeAttribute("inert"));
+
+          // Restaurar foco a elemento visível adequado
+          if (targetFocusEl && targetFocusEl.offsetParent !== null) {
+            targetFocusEl.focus();
+          } else if (btnAbrir && btnAbrir.offsetParent !== null) {
+            btnAbrir.focus();
+          } else {
+            // Se cruzou o breakpoint e o botão de menu está oculto, devolve o foco para a marca
+            const brandEl = document.querySelector<HTMLElement>(".brand-link");
+            brandEl?.focus();
+          }
+        }
+
+        btnAbrir?.addEventListener("click", abrirDrawer);
+        btnFechar?.addEventListener("click", () => fecharDrawer());
+
+        // Fechar ao clicar fora (no backdrop)
+        drawer?.addEventListener("click", (e) => {
+          if (e.target === drawer) {
+            fecharDrawer();
+          }
+        });
+
+        // Contenção estrita de foco (Trap) e tecla Escape
+        document.addEventListener("keydown", (e) => {
+          if (!drawer?.classList.contains("is-open")) return;
+
+          if (e.key === "Escape") {
+            e.preventDefault();
+            fecharDrawer();
+            return;
+          }
+
+          if (e.key === "Tab") {
+            const focusables = getFocusableElements();
+            if (focusables.length === 0) return;
+
+            const firstElement = focusables[0];
+            const lastElement = focusables[focusables.length - 1];
+
+            if (e.shiftKey) {
+              if (document.activeElement === firstElement || !drawerContent?.contains(document.activeElement)) {
+                e.preventDefault();
+                lastElement.focus();
+              }
+            } else {
+              if (document.activeElement === lastElement || !drawerContent?.contains(document.activeElement)) {
+                e.preventDefault();
+                firstElement.focus();
+              }
+            }
+          }
+        });
+
+        // Fechar ao clicar em qualquer âncora interna do drawer
+        drawer?.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            fecharDrawer();
+          });
+        });
+
+        // Fechar o menu ao cruzar o breakpoint de desktop (992px)
+        const desktopMq = window.matchMedia("(min-width: 992px)");
+        const handleBreakpointChange = (e: MediaQueryListEvent | MediaQueryList) => {
+          if (e.matches && drawer?.classList.contains("is-open")) {
+            // Em desktop, fecha o drawer e foca na marca ou primeiro link de nav visível
+            const firstNav = document.querySelector<HTMLElement>(".nav-desktop a");
+            fecharDrawer(firstNav);
+          }
+        };
+
+        if (desktopMq.addEventListener) {
+          desktopMq.addEventListener("change", handleBreakpointChange);
+        } else {
+          desktopMq.addListener(handleBreakpointChange);
+        }
+
+        // Pontos de medição de cliques (sem cookies ou rastreadores externos)
+        document.querySelectorAll("[data-track]").forEach((el) => {
+          el.addEventListener("click", () => {
+            const trackId = el.getAttribute("data-track");
+            if (window && (window as any).dataLayer) {
+              (window as any).dataLayer.push({ event: "cta_click", ctaId: trackId });
+            }
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

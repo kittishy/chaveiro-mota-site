@@ -1,0 +1,225 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteData, buildWhatsAppUrl } from "../data/site";
+
+const pageMeta = siteData.seoPages.keys;
+const breadcrumbs = [
+  { name: "Início", url: "/" },
+  { name: pageMeta.breadcrumb, url: pageMeta.path }
+];
+
+const storeServices = siteData.storeServices;
+---
+
+<Layout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonicalPath={pageMeta.path}
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Breadcrumb Semântico -->
+  <div class="breadcrumb-nav">
+    <div class="container">
+      <nav aria-label="Trilha de navegação (Breadcrumb)">
+        <ol class="breadcrumb-list">
+          <li class="breadcrumb-item">
+            <a href="/">Início</a>
+          </li>
+          <li class="breadcrumb-sep" aria-hidden="true">/</li>
+          <li class="breadcrumb-item breadcrumb-current" aria-current="page">
+            {pageMeta.breadcrumb}
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Header Banner da Subpágina -->
+  <header class="subpage-hero">
+    <div class="container subpage-hero-inner">
+      <span class="section-tag" style="color: var(--color-accent-yellow);">Atendimento em Balcão • Jarivatuba</span>
+      <h1 class="subpage-title">
+        {pageMeta.h1}
+      </h1>
+      <p class="subpage-lead">
+        Cópias de chaves residenciais, comerciais e automotivas em balcão, afiações e serviços práticos na Rua Agulhas Negras, 1530 — Joinville/SC.
+      </p>
+
+      <div class="subpage-actions">
+        <a
+          href={buildWhatsAppUrl("Olá! Vi a página de Cópia de Chaves do Chaveiro Mota e gostaria de tirar uma dúvida sobre serviços de balcão.")}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-primary"
+          data-track="subpage-keys-whatsapp"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Tirar dúvidas pelo WhatsApp</span>
+        </a>
+        <a href={siteData.mapsUrl} target="_blank" rel="noopener noreferrer" class="btn btn-secondary-light" data-track="subpage-keys-maps">
+          <span>Ver no Google Maps</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Técnico Principal -->
+  <section class="section">
+    <div class="container subpage-main-grid">
+      <!-- Artigo Técnico Principal -->
+      <article class="technical-article">
+        <div class="tech-block">
+          <h2>Tipos de Cópias de Chaves Confeccionadas</h2>
+          <p>
+            Na nossa oficina no bairro Jarivatuba, trabalhamos com duplicadoras de precisão e uma ampla variedade de matrizes metálicas (blanks) para cópias perfeitas:
+          </p>
+
+          <div class="tech-checklist">
+            <div class="tech-checklist-item">
+              <svg class="spec-check-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <strong>Chaves Simples (Yale):</strong> Para fechaduras residenciais comuns, portas internas, armários e cadeados.
+              </div>
+            </div>
+
+            <div class="tech-checklist-item">
+              <svg class="spec-check-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <strong>Chaves Tetra:</strong> Chaves de 4 lados com alta segurança para travas auxiliares e portões de condomínio.
+              </div>
+            </div>
+
+            <div class="tech-checklist-item">
+              <svg class="spec-check-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <strong>Chaves Multiponto:</strong> Chaves de segurança perfuradas por pontos para fechaduras de alta resistência.
+              </div>
+            </div>
+
+            <div class="tech-checklist-item">
+              <svg class="spec-check-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+              <div>
+                <strong>Chaves Pantográficas e Canivete:</strong> Lâminas automotivas com fresagem pantográfica para veículos.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tech-block">
+          <h2>Outros Serviços Disponíveis no Balcão</h2>
+          <p>
+            Além da cópia de chaves, nossa loja física oferece conveniência para o dia a dia de moradores e comércios da região:
+          </p>
+          <ul class="service-specs-list">
+            {storeServices.items.map((item) => (
+              <li class="service-spec-item">
+                <div>
+                  <span class="spec-name">{item.title}:</span>
+                  <span class="spec-desc"> {item.description}</span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="tech-block">
+          <h2>Perguntas Frequentes sobre Cópias de Chaves</h2>
+          <div class="faq-accordion-wrap">
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>Quanto tempo demora para fazer uma cópia de chave?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Cópias de chaves simples e tetra são confeccionadas diretamente no balcão. Cópias que envolvem chaves codificadas ou segredos multiponto requerem avaliação prévia e maquinário específico.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>Qual o endereço exato da loja física?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Estamos localizados na Rua Agulhas Negras, 1530 — Jarivatuba, Joinville/SC, com fácil acesso para quem vem da Zona Sul e de outros bairros.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>Quais são os horários do balcão?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>De segunda a sexta-feira, das 09h às 12h e das 14h às 18h. Para urgências fora desse horário, acione nosso plantão móvel 24 horas.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </article>
+
+      <!-- Barra Lateral com Resumo Factual e Contato -->
+      <aside class="sidebar-sticky-box">
+        <div class="service-summary-card">
+          <h3 class="service-summary-title">Loja no Jarivatuba</h3>
+          <p style="font-size: 0.875rem; color: var(--color-text-dark-muted); margin-bottom: 16px;">
+            Atendimento em balcão para cópias de chaves, afiações e foto 3×4.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <div style="font-size: 0.875rem;">
+              <strong>Endereço:</strong> {siteData.fullAddress}
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Horário do balcão:</strong> Seg–Sex 9h–12h e 14h–18h
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Telefone:</strong> {siteData.phoneDisplay}
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Pagamento:</strong> Cartões de crédito e débito
+            </div>
+          </div>
+
+          <a
+            href={buildWhatsAppUrl("Olá! Gostaria de consultar a disponibilidade para cópia de chave no balcão.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            style="width: 100%;"
+            data-track="sidebar-keys-whatsapp"
+          >
+            <span>Consultar no WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Links Internos Cruzados (Crosslinks) -->
+        <div class="crosslinks-bar">
+          <div class="crosslinks-title">Outros Serviços do Chaveiro Mota</div>
+          <nav class="crosslinks-nav" aria-label="Outros serviços">
+            <a href="/chaveiro-automotivo-joinville/" class="crosslink-chip">Chaveiro Automotivo</a>
+            <a href="/chaveiro-residencial-joinville/" class="crosslink-chip">Chaveiro Residencial</a>
+            <a href="/#inicio" class="crosslink-chip">Plantão 24h na Home</a>
+          </nav>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
+

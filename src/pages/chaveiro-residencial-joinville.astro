@@ -1,0 +1,222 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteData, buildWhatsAppUrl } from "../data/site";
+
+const pageMeta = siteData.seoPages.residential;
+const breadcrumbs = [
+  { name: "Início", url: "/" },
+  { name: pageMeta.breadcrumb, url: pageMeta.path }
+];
+
+const resService = siteData.services[1];
+---
+
+<Layout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  canonicalPath={pageMeta.path}
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Breadcrumb Semântico -->
+  <div class="breadcrumb-nav">
+    <div class="container">
+      <nav aria-label="Trilha de navegação (Breadcrumb)">
+        <ol class="breadcrumb-list">
+          <li class="breadcrumb-item">
+            <a href="/">Início</a>
+          </li>
+          <li class="breadcrumb-sep" aria-hidden="true">/</li>
+          <li class="breadcrumb-item breadcrumb-current" aria-current="page">
+            {pageMeta.breadcrumb}
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Header Banner da Subpágina -->
+  <header class="subpage-hero">
+    <div class="container subpage-hero-inner">
+      <span class="section-tag" style="color: var(--color-accent-yellow);">Atendimento Residencial e Comercial</span>
+      <h1 class="subpage-title">
+        {pageMeta.h1}
+      </h1>
+      <p class="subpage-lead">
+        Abertura emergencial de portas, troca de segredos, instalação de fechaduras convencionais e eletrônicas, controles de portão e cofres em Joinville.
+      </p>
+
+      <div class="subpage-actions">
+        <a
+          href={buildWhatsAppUrl("Olá! Vi a página de Chaveiro Residencial do Chaveiro Mota e preciso de atendimento para minha residência em Joinville.")}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-primary"
+          data-track="subpage-res-whatsapp"
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18" aria-hidden="true">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          <span>Consultar pelo WhatsApp</span>
+        </a>
+        <a href={siteData.telHref} class="btn btn-secondary-light" data-track="subpage-res-phone">
+          <span>Ligar {siteData.phoneDisplay}</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Técnico Principal -->
+  <section class="section">
+    <div class="container subpage-main-grid">
+      <!-- Artigo Técnico Principal -->
+      <article class="technical-article">
+        <div class="tech-block">
+          <h2>Serviços de Chaveiro Residencial e Predial em Joinville</h2>
+          <p>
+            O Chaveiro Mota realiza atendimento para residências, condomínios e estabelecimentos comerciais em Joinville. Oferecemos soluções completas para fechaduras travadas, reposição de cilindros e modernização de segurança:
+          </p>
+
+          <div class="tech-checklist">
+            {resService.items.map((item) => (
+              <div class="tech-checklist-item">
+                <svg class="spec-check-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                </svg>
+                <div>
+                  <strong>{item.title}:</strong> {item.description}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="tech-block">
+          <h2>Como Solicitar Atendimento Residencial com Rapidez</h2>
+          <p>
+            Para agilizar o atendimento e garantir as ferramentas corretas para o seu modelo de porta ou fechadura, informe no contato:
+          </p>
+          <ul class="service-specs-list">
+            <li class="service-spec-item">
+              <span class="spec-name">1. Tipo de porta e material:</span>
+              <span class="spec-desc"> Porta de madeira maciça, ferro, alumínio, blindex/vidro ou portão externo.</span>
+            </li>
+            <li class="service-spec-item">
+              <span class="spec-name">2. Tipo de fechadura:</span>
+              <span class="spec-desc"> Fechadura comum (Yale), tetra chave, multiponto, fechadura digital ou eletrônica.</span>
+            </li>
+            <li class="service-spec-item">
+              <span class="spec-name">3. Bairro ou endereço em Joinville:</span>
+              <span class="spec-desc"> Localização para deslocamento técnico com atendimento 24 horas para urgências.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mídia Ilustrativa do Serviço -->
+        <figure class="service-media-figure">
+          <picture>
+            <source srcset={resService.image.srcsetWebp} sizes={resService.image.sizes} type="image/webp" />
+            <source srcset={resService.image.srcsetJpg} sizes={resService.image.sizes} type="image/jpeg" />
+            <img
+              src={resService.image.jpg}
+              alt={resService.image.alt}
+              width={resService.image.width}
+              height={resService.image.height}
+              loading="lazy"
+              decoding="async"
+              class="service-media-img"
+            />
+          </picture>
+          <figcaption class="image-caption">Imagem ilustrativa de fechadura e porta residencial</figcaption>
+        </figure>
+
+        <div class="tech-block">
+          <h2>Perguntas Frequentes sobre Chaveiro Residencial</h2>
+          <div class="faq-accordion-wrap">
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>Vocês instalam fechaduras eletrônicas e digitais?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Sim. Realizamos furação, regulagem e instalação de fechaduras digitais e eletrônicas com senha, tag ou biometria em portas de madeira e metal.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>É possível trocar o segredo sem trocar toda a fechadura?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Em fechaduras com cilindro removível (monobloco ou bi-partido), é possível avaliar a troca do segredo interno ou do cilindro, gerando novas chaves. Consulte-nos pelo WhatsApp informando a marca e foto da sua fechadura.</p>
+              </div>
+            </details>
+
+            <details class="faq-item">
+              <summary class="faq-question">
+                <span>Vocês realizam abertura de cofres?</span>
+                <svg class="faq-icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              </summary>
+              <div class="faq-answer">
+                <p>Sim. Atendemos chamados técnicos para abertura de cofres mecânicos e eletrônicos residenciais e comerciais em Joinville.</p>
+              </div>
+            </details>
+          </div>
+        </div>
+      </article>
+
+      <!-- Barra Lateral com Resumo Factual e Contato -->
+      <aside class="sidebar-sticky-box">
+        <div class="service-summary-card">
+          <h3 class="service-summary-title">Plantão Residencial 24h</h3>
+          <p style="font-size: 0.875rem; color: var(--color-text-dark-muted); margin-bottom: 16px;">
+            Atendimento técnico em portas travadas, troca de fechaduras e segurança de imóveis em Joinville.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+            <div style="font-size: 0.875rem;">
+              <strong>Telefone:</strong> {siteData.phoneDisplay}
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Plantão móvel:</strong> 24 horas todos os dias
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Loja física:</strong> Rua Agulhas Negras, 1530 • Jarivatuba
+            </div>
+            <div style="font-size: 0.875rem;">
+              <strong>Pagamento:</strong> Cartões de crédito e débito
+            </div>
+          </div>
+
+          <a
+            href={buildWhatsAppUrl("Olá! Preciso de atendimento de chaveiro residencial em Joinville.")}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary"
+            style="width: 100%;"
+            data-track="sidebar-res-whatsapp"
+          >
+            <span>Falar no WhatsApp</span>
+          </a>
+        </div>
+
+        <!-- Links Internos Cruzados (Crosslinks) -->
+        <div class="crosslinks-bar">
+          <div class="crosslinks-title">Outros Serviços do Chaveiro Mota</div>
+          <nav class="crosslinks-nav" aria-label="Outros serviços">
+            <a href="/chaveiro-automotivo-joinville/" class="crosslink-chip">Chaveiro Automotivo</a>
+            <a href="/copia-de-chaves-joinville/" class="crosslink-chip">Cópia de Chaves no Balcão</a>
+            <a href="/#loja" class="crosslink-chip">Loja no Jarivatuba</a>
+          </nav>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>
+

@@ -1,0 +1,68 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { siteData } from "../data/site";
+---
+
+<Layout
+  title="Página não encontrada | Chaveiro Mota Joinville"
+  description="A página que você procura não foi encontrada. Retorne à página inicial do Chaveiro Mota ou acesse os serviços de chaveiro automotivo e residencial."
+  isNotFound={true}
+>
+  <section class="section section-dark not-found-section">
+    <div class="container not-found-box">
+      <span class="section-tag" style="color: var(--color-accent-yellow);">Erro 404</span>
+      <h1 class="section-title">Página não encontrada</h1>
+      <p class="section-subtitle not-found-desc">
+        O endereço solicitado não existe ou foi alterado. Você pode retornar à página inicial ou navegar diretamente para os nossos serviços em Joinville:
+      </p>
+
+      <div class="not-found-actions">
+        <a href="/" class="btn btn-primary">
+          <span>Voltar para o início</span>
+        </a>
+        <a href={siteData.telHref} class="btn btn-secondary-light">
+          <span>Ligar para o plantão 24h</span>
+        </a>
+      </div>
+
+      <div class="not-found-links">
+        <span style="font-size: 0.875rem; color: var(--color-text-light-muted); display: block; margin-bottom: 12px;">Páginas de serviço:</span>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="/chaveiro-automotivo-joinville/" class="crosslink-chip">Chaveiro Automotivo</a>
+          <a href="/chaveiro-residencial-joinville/" class="crosslink-chip">Chaveiro Residencial</a>
+          <a href="/copia-de-chaves-joinville/" class="crosslink-chip">Cópia de Chaves</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found-section {
+    min-height: 65vh;
+    display: flex;
+    align-items: center;
+    background-color: var(--color-bg-dark);
+    color: var(--color-text-light);
+  }
+  .not-found-box {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .not-found-desc {
+    margin: 0 auto 32px auto;
+    color: var(--color-text-light-muted);
+  }
+  .not-found-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .not-found-links {
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border-dark);
+  }
+</style>

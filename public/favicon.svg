@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#111820"/>
+  <!-- Key icon in warm yellow -->
+  <path d="M42 22a9 9 0 0 0-14.7 6.9c0 .8.1 1.6.4 2.3L15 43.8V49h5v-3h4v-3h4l2.6-2.6c.9.4 1.9.6 2.9.6 5 0 9-4 9-9 0-1.8-.5-3.5-1.5-4.9A8.9 8.9 0 0 0 42 22zm-4 6a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" fill="#F5C542"/>
+</svg>
