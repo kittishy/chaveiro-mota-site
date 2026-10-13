@@ -54,8 +54,7 @@ import { siteData } from "../data/site";
     ].join("\n");
 
     const url = String(form.dataset.whatsappBase || "") + "?text=" + encodeURIComponent(message);
-    const opened = window.open(url, "_blank", "noopener,noreferrer");
-    if (!opened) window.location.assign(url);
+    window.location.assign(url);
   });
 </script>
 
