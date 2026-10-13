@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import QuickRequest from "../components/QuickRequest.astro";
 import { siteData, buildWhatsAppUrl } from "../data/site";
 
 const pageMeta = siteData.seoPages.home;
@@ -391,6 +392,8 @@ const pageMeta = siteData.seoPages.home;
               </div>
             ))}
           </div>
+
+          <QuickRequest />
 
           <div style="margin-top: 24px;">
             <a
