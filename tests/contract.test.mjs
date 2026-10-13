@@ -256,3 +256,23 @@ test("Ausência de termos especulativos ou marcas de IA na interface", () => {
     }
   }
 });
+
+test("Pedido guiado: labels, serviço obrigatório e WhatsApp configurado", () => {
+  const html = fs.readFileSync(distHtmlPath, "utf-8");
+  assert.ok(html.includes('id="quick-request-form"'), "Formulário de pedido deve existir");
+  assert.ok(html.includes('for="request-service"'), "Seleção de serviço precisa de label");
+  assert.ok(html.includes('name="servico" required'), "Serviço deve ser obrigatório");
+  assert.ok(html.includes('name="bairro"'), "Bairro opcional deve existir");
+  assert.ok(html.includes('name="detalhes"'), "Detalhes opcionais devem existir");
+  assert.ok(html.includes('data-whatsapp-base="https://wa.me/5547997217584"'), "Destinatário deve ser o WhatsApp oficial");
+  assert.ok(html.includes("Nenhuma informação é enviada por este site"), "Explicação de privacidade deve existir");
+});
+
+test("Prévia não deve liberar robôs antes da aprovação expressa", () => {
+  const robots = fs.readFileSync(robotsPath, "utf-8");
+  const html = fs.readFileSync(distHtmlPath, "utf-8");
+  if (process.env.ENABLE_INDEXING !== "true") {
+    assert.ok(robots.includes("Disallow: /"), "Robots da prévia deve bloquear indexação");
+    assert.ok(html.includes('content="noindex, nofollow"'), "Metatag da prévia deve ser noindex");
+  }
+});
