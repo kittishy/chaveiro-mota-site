@@ -2,7 +2,8 @@ import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async () => {
   const siteOrigin = process.env.SITE_URL || process.env.PUBLIC_SITE_URL;
-  const isOfficial = Boolean(siteOrigin && !siteOrigin.includes("localhost") && !siteOrigin.includes("127.0.0.1"));
+  const isIndexingEnabled = process.env.ENABLE_INDEXING === "true";
+  const isOfficial = Boolean(isIndexingEnabled && siteOrigin && !siteOrigin.includes("localhost") && !siteOrigin.includes("127.0.0.1"));
   const normalizedOrigin = siteOrigin ? siteOrigin.replace(/\/+$/, "") : "";
 
   // Em modo oficial, permite indexação e informa sitemap.
