@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # Test artifacts
 tests/screenshots/
+
+.vercel
+.env*.local
